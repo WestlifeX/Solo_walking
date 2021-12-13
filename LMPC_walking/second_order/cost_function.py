@@ -87,7 +87,8 @@ def compute_objective_terms(alpha, beta, gamma, step_duration, no_steps_per_T,
                  - alpha*Z_ref_k[:,1]
     return Q, p_k
 
-
+# I've added This function
+# same function as before to work with quadrupeds
 def compute_objective_terms_quad(alpha, beta, gamma, step_duration, no_steps_per_T,
                             N, stride_length, stride_width, P_ps, P_pu, P_vs,
                             P_vu, x_hat_k, y_hat_k, Z_ref_k):

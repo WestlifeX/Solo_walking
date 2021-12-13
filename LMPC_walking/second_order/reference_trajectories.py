@@ -17,6 +17,8 @@
 
 import numpy as np
 
+# I've added This function
+# It returns the position of the fron foot based on the hind foot position 
 def compute_front_feet(foot_steps, duration, d1, d2, l):
     Foot_steps = np.zeros((foot_steps.shape[0], 4))
     j=0
@@ -26,25 +28,6 @@ def compute_front_feet(foot_steps, duration, d1, d2, l):
         else:
             Foot_steps[j:j+duration] = np.concatenate((foot_steps[j], foot_steps[j] + l * d2))
         j += duration
-    return Foot_steps
-
-    '''for i in range(Foot_steps.shape[0]):
-        # print(np.concatenate((Foot_steps_tmp[i], Foot_steps_tmp[i] + l*d1*pow(-1, i) )))
-        if j <= duration:
-            if j == duration:
-                Foot_steps[i, :] = np.concatenate((foot_steps[i], foot_steps[i] + l * d2))
-            else:
-                Foot_steps[i, :] = np.concatenate((foot_steps[i], foot_steps[i] + l * d1))
-            j += 1
-        else:
-            if j == 2*duration:
-                j=0
-            Foot_steps[i, :] = np.concatenate((foot_steps[i], foot_steps[i] + l * d1))
-            j+=1'''
-
-
-
-
     return Foot_steps
 
 # Description:
@@ -72,9 +55,9 @@ def manual_foot_placement(foot_step_0, fixed_step_x, no_steps):
             Foot_steps[i,0] = Foot_steps[i-1,0] + fixed_step_x
             Foot_steps[i,1] = -Foot_steps[i-1,1]
     return Foot_steps
-
-### same function for quadruped
-
+    
+# I've added This function
+# same function as before to work with quadrupeds
 def manual_foot_placement_quad(foot_step_zero, fixed_step_x, no_steps, d1, d2, l):
 
     Foot_steps_tmp = np.zeros((no_steps,2))
@@ -117,7 +100,9 @@ def create_CoP_trajectory(no_steps, Foot_steps, walking_time, no_steps_per_T):
         Z_ref[j:j+no_steps_per_T, :] = Foot_steps[i,:]
         j = j + no_steps_per_T
     return Z_ref
-### Same function for quadruped
+
+# I've added This function
+# same function as before to work with quadrupeds
 
 def create_CoP_trajectory_quad(Foot_steps, walking_time, no_steps_per_T, d1, d2, l):
     Z_ref = np.zeros((walking_time, 2))

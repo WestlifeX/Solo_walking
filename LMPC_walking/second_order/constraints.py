@@ -82,6 +82,8 @@ def add_ZMP_constraints(N, foot_length, foot_width, Z_ref_k, x_hat_k, y_hat_k):
     print(b)
     return A,b
 
+# I've added This function
+# same function as before to work with quadrupeds
 def add_ZMP_constraints_quad(N, Foot_steps, D, l):
 
     # pre-allocate memory
@@ -192,7 +194,8 @@ def add_terminal_constraints(N, terminal_index, x_hat_k, y_hat_k, x_terminal,
 
     return A_eq, b_eq
 
-
+# I've added This function
+# same function as before to work with quadrupeds
 def add_terminal_constraints_quad(N, terminal_index, x_hat_k, y_hat_k, x_terminal,
                              y_terminal, P_ps, P_vs, P_pu, P_vu, foot_steps, D):
 

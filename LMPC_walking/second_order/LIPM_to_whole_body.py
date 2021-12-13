@@ -135,7 +135,8 @@ def interpolate_lipm_traj(T_step, nb_steps, dt_mpc, dt_ctrl, com_z, g,
             if(j>0): contact_phase[ii] = contact_phase[ii-1]
     return com, dcom, ddcom, cop, contact_phase, foot_steps
 
-
+# I've added This function
+# same function as before to work with quadrupeds
 def interpolate_lipm_traj_quad(T_step, nb_steps, dt_mpc, dt_ctrl, com_z, g, Foot_steps,
                           com_state_x, com_state_y, cop_ref, cop_x, cop_y):
     # INTERPOLATE WITH TIME STEP OF CONTROLLER (TSID)
