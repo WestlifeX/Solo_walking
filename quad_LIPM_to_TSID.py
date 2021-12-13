@@ -41,10 +41,10 @@ x_FLF, dx_FLF, ddx_FLF = compute_foot_traj(foot_steps_FLF, N_ctrl, dt_ctrl, conf
 
 # SAVE COMPUTED TRAJECTORIES IN NPY FILE FOR TSID
 np.savez(conf.DATA_FILE_TSID, com=com, dcom=dcom, ddcom=ddcom,
-         x_HRF=x_HRF, dx_HRF=dx_HRF, ddx_HRF=ddx_HRF,
-         x_FRF=x_FRF, dx_FRF=dx_FRF, ddx_FRF=ddx_FRF,
-         x_HLF=x_HLF, dx_HLF=dx_HLF, ddx_HLF=ddx_HLF,
-         x_FLF=x_FLF, dx_FLF=dx_FLF, ddx_FLF=ddx_FLF,
+         x_HR =x_HRF, dx_HR =dx_HRF, ddx_HR =ddx_HRF,
+         x_FR =x_FRF, dx_FR=dx_FRF , ddx_FR =ddx_FRF,
+         x_HL=x_HLF, dx_HL=dx_HLF, ddx_HL =ddx_HLF,
+         x_FL =x_FLF, dx_FL =dx_FLF, ddx_FL =ddx_FLF,
          contact_phase=contact_phase, cop=cop)
 
 # PLOT STUFF

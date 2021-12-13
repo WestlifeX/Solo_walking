@@ -26,7 +26,7 @@ def configure_simulation(dt, x0, enableGUI):
 
     # Load horizontal plane for PyBullet
     p.setAdditionalSearchPath(pybullet_data.getDataPath())
-    p.loadURDF("plane.urdf")
+    planeId = p.loadURDF("plane.urdf")
 
     # Load the robot for PyBullet
     robotStartPos = x0
@@ -34,6 +34,7 @@ def configure_simulation(dt, x0, enableGUI):
     p.setAdditionalSearchPath("/opt/openrobots/share/example-robot-data/robots/solo_description/robots")
     robotId = p.loadURDF("solo12.urdf", robotStartPos, robotStartOrientation)
 
+    
     # Set time step of the simulation
     # dt = 0.001
     p.setTimeStep(dt)
@@ -42,11 +43,48 @@ def configure_simulation(dt, x0, enableGUI):
     # Disable default motor control for revolute joints
     #revoluteJointIndices = [0, 1, 3, 4, 6, 7, 9, 10]
     revoluteJointIndices = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
+    
+    for i in revoluteJointIndices:
+        p.resetJointState(robotId, i, np.pi/4)
+        
+    p.resetJointState(robotId, 0, 0)
+    p.resetJointState(robotId, 4, 0)
+    p.resetJointState(robotId, 8, 0)
+    p.resetJointState(robotId, 12, 0)
+    
+    p.resetJointState(robotId, 2, -np.pi/2)
+    p.resetJointState(robotId, 6, -np.pi/2)
+    p.resetJointState(robotId, 10, -np.pi/2)
+    p.resetJointState(robotId, 14, -np.pi/2)
+    
     p.setJointMotorControlArray(robotId,
                                 jointIndices=revoluteJointIndices,
                                 controlMode=p.VELOCITY_CONTROL,
                                 targetVelocities=[0.0 for m in revoluteJointIndices],
                                 forces=[0.0 for m in revoluteJointIndices])
+    
+# Get position of feet in world frame with base at (0, 0, 0)
+    feetLinksID = [3, 7, 11, 15]
+    linkStates = p.getLinkStates(robotId, feetLinksID)
+
+    # Get minimum height of feet (they are in the ground since base is at 0, 0, 0)
+    z_min = linkStates[0][4][2]
+    i_min = 0
+    i = 1
+    for link in linkStates[1:]:
+        if link[4][2] < z_min:
+            z_min = link[4][2]
+            i_min = i
+        i += 1
+
+    # Set base at (0, 0, -z_min) so that the lowest foot is at z = 0
+    p.resetBasePositionAndOrientation(robotId, [0.0, 0.0, -z_min], [0, 0, 0, 1])
+
+    # Progressively raise the base to achieve proper contact (take into account radius of the foot)
+    while (p.getClosestPoints(robotId, planeId, distance=0.005,
+                                linkIndexA=feetLinksID[i_min]))[0][8] < 0.001:
+        z_min -= 0.001
+        p.resetBasePositionAndOrientation(robotId, [x0[0], x0[1], -z_min], [0, 0, 0, 1])
 
     # Enable torque control for revolute joints
     jointTorques = [0.0 for m in revoluteJointIndices]

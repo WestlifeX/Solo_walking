@@ -20,11 +20,11 @@
 # -------
 import numpy as np
 from quadprog import solve_qp
-import LMPC_walking.second_order.reference_trajectories as reference_trajectories
-import LMPC_walking.second_order.motion_model as motion_model
-import LMPC_walking.second_order.cost_function as cost_function
-import LMPC_walking.second_order.constraints as constraints
-import LMPC_walking.second_order.plot_utils as plot_utils
+import LMPC_walking_quadruped.second_order.reference_trajectories as reference_trajectories
+import LMPC_walking_quadruped.second_order.motion_model as motion_model
+import LMPC_walking_quadruped.second_order.cost_function as cost_function
+import LMPC_walking_quadruped.second_order.constraints as constraints
+import LMPC_walking_quadruped.second_order.plot_utils as plot_utils
 import matplotlib.pyplot as plt
 import matplotlib
 
@@ -51,6 +51,7 @@ l = conf.l
 foot_step_zero = conf.foot_step_zero
 Foot_steps = reference_trajectories.manual_foot_placement_quad(foot_step_zero, fixed_step_x, nb_steps, d1, d2, l)
 
+Foot_steps[1:,0::2] -= conf.fixed_step_x
 # compute CoP reference trajectory:
 # --------------------------------
 [CoP_ref, full_steps, D] = reference_trajectories.create_CoP_trajectory_quad(Foot_steps, N, nb_dt_per_step, d1, d2, l)
@@ -93,7 +94,6 @@ cop_y = full_steps[:,1] + alpha*D[:,1] # Get the cop position on y by the relati
 my_U = np.concatenate((cop_x, cop_y), axis = 0)
 
 
-
 [com_state_x, com_state_y] = motion_model.compute_recursive_dynamics(P_ps, P_vs, P_pu,
                                                              P_vu, N, x_0,
                                                              y_0, my_U)
@@ -103,7 +103,7 @@ my_U = np.concatenate((cop_x, cop_y), axis = 0)
 plt.scatter(Foot_steps[:,0], Foot_steps[:,1], marker="8", c="chocolate", s = 200)
 plt.scatter(Foot_steps[:,2], Foot_steps[:,3], marker="8", c="cornflowerblue", s = 200)
 plt.plot(CoP_ref[:,0], CoP_ref[:,1])
-plt.plot(cop_x, cop_y, c='green')
+plt.scatter(cop_x, cop_y, c='green')
 plt.plot(com_state_x[:,0], com_state_y[:,0], c='coral')
 plt.legend(["CoP Ref", "Computed CoP", "Computed CoM"])
 plt.show()

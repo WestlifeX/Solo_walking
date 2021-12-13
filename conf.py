@@ -8,12 +8,12 @@ path = "/opt/openrobots/share/example-robot-data/robots/solo_description/robots"
 urdf = path + "/solo12.urdf"
 
 # Dog parameters
-vector1 = np.array([45, 33])
-vector2 = np.array([45, -33])
+vector1 = np.array([3.89200000e-01, 1.46950000e-01 * 2])
+vector2 = np.array([3.89200000e-01, -1.46950000e-01*2])
 d1= vector1/ np.linalg.norm(vector1)
 d2= vector2/ np.linalg.norm(vector2)
-l = 0.558
-foot_step_zero = np.array([0.0, -0.165])
+l = np.sqrt(vector1[0]**2 + vector1[1]**2)
+foot_step_zero = np.array([0.0, -1.46950000e-01])
 
 
 # configuration for LIPM trajectory optimization
@@ -21,22 +21,24 @@ foot_step_zero = np.array([0.0, -0.165])
 alpha       = 10**(2)   # CoP error squared cost weight
 beta        = 0         # CoM position error squared cost weight
 gamma       = 10**(-1)  # CoM velocity error squared cost weight
-h           = 0.3       # fixed CoM height
+h           = 0.23       # fixed CoM height
 g           = 9.81      # norm of the gravity vector
-dt_mpc                = 0.1               # sampling time interval
-T_step                = 0.5              # time needed for every step
+dt_mpc                = 0.2               # sampling time interval
+T_step                = 0.8              # time needed for every step
 dt = 0.001
 
 
-fixed_step_x = 0.10
+fixed_step_x = 0.05
 stride_length = 0.05
-step_height = 0.2   # maximum foot trajectory height
+step_height = 0.1   # maximum foot trajectory height
 nb_steps = 4     # number of steps to perform
 
 nb_dt_per_step = int(round(T_step/dt_mpc))
 N  = nb_steps * nb_dt_per_step
+N_post = 1000
+N_pre = 1000
 
-
+print(nb_dt_per_step)
 T_pre  = 1.5                    # simulation time before starting to walk
 T_post = 1.5                    # simulation time after walking
 
@@ -50,28 +52,28 @@ fMax = 1e6                       # maximum normal force
 
 kp_contact = 10.0               # proportional gain of contact constraint
 kp_foot = 10.0                  # proportional gain of contact constraint
-kp_com = 20.0                   # proportional gain of center of mass task
-kp_am = 10.0                   # proportional gain of angular momentum task
+kp_com = 30.0                   # proportional gain of center of mass task
+kp_am = 20.0                   # proportional gain of angular momentum task
 kp_posture = 1.0               # proportional gain of joint posture task
 
-w_contact = 1                 # weight of the foot in contact
-w_com = 1.0                     # weight of center of mass task
-w_posture = 1e-2                # weight of joint posture task
-w_forceRef = 1e-8     
+w_contact = 1e5                 # weight of the foot in contact
+w_com = 10                     # weight of center of mass task
+w_posture = 1e-4                # weight of joint posture task
+w_am = 1e0 
+w_forceRef = 1e-8
+w_foot = 1 
+w_torque_bounds = 0
+#w_cop = 1e-1
 
+tau_max_scaling = 1.4
 
-q0 = 0 * np.ones(19)
-q0[2] = 0.34
-
-w_FL = 1
 
 # PARAMETERS OF REFERENCE SINUSOIDAL TRAJECTORY
 amp         = np.array([0.05, 0.0, 0]).T           # amplitude
-x01          = np.array([0, 0, 0.12]).T         # offset
+x0          = np.array([0, 0, 0.12]).T         # offset
 phi         = np.array([0.0, 0.0, 0.5*np.pi]).T     # phase
 freq        = np.array([0.4, 0.2, 0.4]).T           # frequency (time 2 PI)
 
-x02          = np.array([-0.2, -0.15005, 0.12]).T         # offset
 
 T_SIMULATION = 10             # simulation time
 dt = 0.001                   # controller time step
