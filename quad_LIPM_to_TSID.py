@@ -1,3 +1,5 @@
+# I've written this script based on the one of TSID ex_4 examples
+
 import matplotlib
 import numpy as np
 import LMPC_walking.second_order.plot_utils as plot_utils

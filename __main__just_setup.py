@@ -30,7 +30,7 @@ data = np.load(conf.DATA_FILE_TSID)
 dt = conf.dt # time step of the simulation
 t = 0.0
 N = data['com'].shape[1]
-N_pre = conf.N_pre
+ = conf.N_pre
 N_post = conf.N_post
 
 # Load trajectories

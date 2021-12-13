@@ -18,6 +18,9 @@
 
 # headers:
 # -------
+
+# I've written this script based on the one of TSID ex_4 examples
+ 
 import numpy as np
 from quadprog import solve_qp
 import LMPC_walking_quadruped.second_order.reference_trajectories as reference_trajectories

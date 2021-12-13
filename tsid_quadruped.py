@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Nov 28 21:17:49 2021
 
-@author: alessandro
-"""
 import pinocchio as pin
 import tsid
 import numpy as np
@@ -36,6 +32,7 @@ class TsidQuadruped:
         H_fr_ref = robot.framePosition(data, self.FR)
         H_hl_ref = robot.framePosition(data, self.HL)
         H_hr_ref = robot.framePosition(data, self.HR)
+        
         
         self.com_ref = robot.com(data)
         
@@ -145,6 +142,11 @@ class TsidQuadruped:
         self.sample_COM_pos = self.sampleCOM.pos()
         self.sample_COM_vel = self.sampleCOM.vel()
         self.sample_COM_acc = self.sampleCOM.acc()
+        
+        self.H_fl_ref =  H_fl_ref
+        self.H_fr_ref =  H_fr_ref
+        self.H_hl_ref =  H_hl_ref
+        self.H_hr_ref =  H_hr_ref
         
         
         self.postureTask = postureTask

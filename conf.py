@@ -51,17 +51,17 @@ fMin = 0.0                          # minimum normal force
 fMax = 1e6                       # maximum normal force
 
 kp_contact = 10.0               # proportional gain of contact constraint
-kp_foot = 10.0                  # proportional gain of contact constraint
+kp_foot = 10.0    *0            #             
 kp_com = 30.0                   # proportional gain of center of mass task
-kp_am = 20.0                   # proportional gain of angular momentum task
-kp_posture = 1.0               # proportional gain of joint posture task
+kp_am = 20.0  *0                 # proportional gain of angular momentum task
+kp_posture = 1.0    * 0          # proportional gain of joint posture task
 
 w_contact = 1e5                 # weight of the foot in contact
 w_com = 10                     # weight of center of mass task
 w_posture = 1e-4                # weight of joint posture task
 w_am = 1e0 
 w_forceRef = 1e-8
-w_foot = 1 
+w_foot = 1 *0
 w_torque_bounds = 0
 #w_cop = 1e-1
 
