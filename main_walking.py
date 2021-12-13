@@ -139,14 +139,6 @@ ref_sphere4 = build_sphere(conf.x0, radius, red_color)
 ref_sphere5 = build_sphere(conf.x0, radius, red_color)
 com_sphere = build_sphere(conf.x0, radius, (0,0,1,1))
 
-# Now I'm only tracking a sine wave with the CoM, 
-# This will became a trajectory from the trajectory optimization, along with trajectories for feet
-offset     = tsid.robot.com(tsid.formulation.data()) + np.array([0.0, 0.0, -0.0])
-amp        = np.array([0.05, 0.0, 0.03])
-two_pi_f             = 2*np.pi*np.array([1, 1.0, 0.8])
-two_pi_f_amp         = np.multiply(two_pi_f,amp)
-two_pi_f_squared_amp = np.multiply(two_pi_f, two_pi_f_amp)
-
 
 q, qdot = tsid.q, tsid.qdot
 
