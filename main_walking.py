@@ -81,17 +81,9 @@ ddx_HR_ref  = np.asarray(data['ddx_HR'])
 cop_ref     = np.asarray(data['cop'])
 com_acc_des = np.empty((3, N+N_post))*nan # acc_des = acc_ref - Kp*pos_err - Kd*vel_err
 
-# If True then we will sleep in the main loop to have a 1:1 ratio of (elapsed real time / elapsed time in the
-# simulation)
-
-startup_pos  = np.concatenate((np.insert(com_pos_ref[0:2, 0], 2, 0.335), np.zeros(16)))
-realTimeSimulation = True
-enableGUI = True  # enable PyBullet GUI or not
-
 q0 = np.zeros(19)
 q0[0:3] = np.insert(com_pos_ref[0:2, 0], 2, 0.5)
 
-startup_pos  = np.concatenate((np.insert(com_pos_ref[0:2, 0], 2, 0.335), np.pi*np.ones(16)))
 realTimeSimulation = True
 enableGUI = True  # enable PyBullet GUI or not
 
