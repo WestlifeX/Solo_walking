@@ -81,11 +81,13 @@ ddx_HR_ref  = np.asarray(data['ddx_HR'])
 cop_ref     = np.asarray(data['cop'])
 com_acc_des = np.empty((3, N+N_post))*nan # acc_des = acc_ref - Kp*pos_err - Kd*vel_err
 
-q0 = np.zeros(19)
-q0[0:3] = np.insert(com_pos_ref[0:2, 0], 2, 0.5)
-
+# If True then we will sleep in the main loop to have a 1:1 ratio of (elapsed real time / elapsed time in the
+# simulation)
 realTimeSimulation = True
 enableGUI = True  # enable PyBullet GUI or not
+
+q0 = np.zeros(19)
+q0[0:3] = np.insert(com_pos_ref[:2, 0], 2, 0.5)
 
 robotId, r, revoluteJointIndices = configure_simulation(dt, q0[:3], enableGUI)
 robot = RobotWrapper(r.model, r.collision_model, r.visual_model)
@@ -94,6 +96,7 @@ q0 = getPosVelJoints(robotId, revoluteJointIndices)[0]
 
 # TSID implementation for quadrupeds
 tsid = TsidQuadruped(conf, q0)
+tsid.start()
 
 x_rf   = tsid.get_HR_pos()
 offset = x_rf - x_HR_ref[:,0]
@@ -109,14 +112,13 @@ q_log  = np.zeros((tsid.robot.nq, N+N_post))
 v_log  = np.zeros((tsid.robot.nv, N+N_post))
 
 x_HR_log = np.zeros((3, N+N_post))
+x_HR_ref_log = np.zeros((3, N+N_post))
 com_log  = np.zeros((3, N+N_post))
 com_ref_log  = np.zeros((3, N+N_post))
 FL_force_log = np.zeros((3, N+N_post))
 FR_force_log = np.zeros((3, N+N_post))
 HL_force_log = np.zeros((3, N+N_post))
 HR_force_log = np.zeros((3, N+N_post))
-
-FR_ref_log = np.zeros((3, N+N_post))
 
 # Balls to show trajectories
 def build_sphere(x0, r, color):
@@ -141,10 +143,13 @@ com_sphere = build_sphere(conf.x0, radius, (0,0,1,1))
 
 
 q, qdot = tsid.q, tsid.qdot
-
+transition_time = 0
 ###############
 #  MAIN LOOP ##
 ###############
+
+#tsid.remove_contact_FR()
+#tsid.remove_contact_HR()
 
 for i in range(-N_pre, N + N_post):
     # Time at the start of the loop
@@ -156,28 +161,28 @@ for i in range(-N_pre, N + N_post):
     
     if i == 0:
         print("Removing contact from FR, HL")
-        tsid.remove_contact_FR()
-        tsid.remove_contact_HL()
+        tsid.remove_contact_FR(transition_time)
+        tsid.remove_contact_HL(transition_time)
     elif i>0 and i< N - 1:
         if contact_phase[i] != contact_phase[i-1]:
             #print("Time %.3f Changing contact phase from %s to %s"%(t, contact_phase[i-1], contact_phase[i]))
             if contact_phase[i] == 'right':
-                tsid.add_contact_FL()
-                tsid.add_contact_HR()
-                tsid.remove_contact_FR()
-                tsid.remove_contact_HL()
+                tsid.add_contact_FL(transition_time)
+                tsid.add_contact_HR(transition_time)
+                tsid.remove_contact_FR(transition_time)
+                tsid.remove_contact_HL(transition_time)
             else:
                 print("Hind Left in contact")
-                tsid.add_contact_FR()
-                tsid.add_contact_HL()
-                tsid.remove_contact_FL()
-                tsid.remove_contact_HR()
+                tsid.add_contact_FR(transition_time)
+                tsid.add_contact_HL(transition_time)
+                tsid.remove_contact_FL(transition_time)
+                tsid.remove_contact_HR(transition_time)
                 
     if i<0:
         com_log[:, i] = tsid.robot.com(tsid.formulation.data())
         com_ref_log[:, i] = com_pos_ref[:, 0]
         
-        tsid.set_com_ref(com_pos_ref[:,0], com_vel_ref[:,0], com_acc_ref[:,0])
+        tsid.set_com_ref(com_pos_ref[:,0], 0*com_vel_ref[:,0], 0*com_acc_ref[:,0])
         #tsid.set_com_ref(offset + np.multiply(amp, np.sin(two_pi_f*t)), np.multiply(two_pi_f_amp, np.cos(two_pi_f*t)), np.multiply(two_pi_f_squared_amp, -np.sin(two_pi_f*t)))
         #com_ref_log[:, i] = offset + np.multiply(amp, np.sin(two_pi_f*t))
         
@@ -188,8 +193,7 @@ for i in range(-N_pre, N + N_post):
         p.resetBasePositionAndOrientation(ref_sphere5, x_HR_ref[:, 0], p.getQuaternionFromEuler([0,0,0]))
         p.resetBasePositionAndOrientation(com_sphere, com_log[:, i], p.getQuaternionFromEuler([0,0,0]))
         
-    elif i<N-1:
-        #tsid.set_com_ref(com_pos_ref[:,0], 0*com_vel_ref[:,0], 0*com_acc_ref[:,0])
+    elif i<N:
         tsid.set_com_ref(com_pos_ref[:,i], com_vel_ref[:,i], com_acc_ref[:,i])
         com_ref_log[:, i] = com_pos_ref[:, i]
         
@@ -208,7 +212,6 @@ for i in range(-N_pre, N + N_post):
 
         tau[:, i] = jointTorques
         x_HR_log[:, i] = tsid.get_HR_pos()
-        com_log[:, i] = tsid.robot.com(tsid.data)
     
     
     HQPData = tsid.formulation.computeProblemData(t, q, qdot)
@@ -240,18 +243,18 @@ print("Finished :)")
 #p.disconnect()
 
 
-'''for i in range (3):
-    plt.plot(x_HR_log[i, :])
-    plt.plot(x_HR_ref[i, :])
+for i in range (3):
+    plt.plot(x_HR_log[i, :N])
+    plt.plot(x_HR_ref[i, :N])
     #plt.ylim([-0.1,0.5])
     plt.legend(['Performed', 'Desired'])
-    plt.show()'''
+    plt.show()
 
 for i in range (3):
     plt.title('COM_x'+str(i))
-    plt.plot(com_log[i, :])
-    plt.plot(com_ref_log[i, :])
-    #plt.ylim([-0.1,0.5])
+    plt.plot(com_log[i, :N])
+    plt.plot(com_ref_log[i, :N])
+    plt.ylim([-0.1,0.5])
     plt.legend(['Performed', 'Desired'])
     plt.show()
     

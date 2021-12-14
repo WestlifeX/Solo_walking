@@ -34,7 +34,7 @@ class TsidQuadruped:
         H_hr_ref = robot.framePosition(data, self.HR)
         
         
-        self.com_ref = robot.com(data)
+        self.com_ref = robot.com(formulation.data())
         
         #q[2] -= robot.framePosition(data, model.getFrameId(conf.contact_frames[0])).translation[2]
         robot.computeAllTerms(data, q, qdot)
@@ -182,6 +182,19 @@ class TsidQuadruped:
                                   self.robot_display.visual_model)
                 self.viz.initViewer(loadModel=True)
                 self.viz.display(q)
+    
+    def start(self):
+        ref_fl = self.H_fl_ref.translation
+        self.set_FL_ref(ref_fl, 0*ref_fl, 0*ref_fl)
+        
+        ref_fr = self.H_fr_ref.translation
+        self.set_FR_ref(ref_fr, 0*ref_fr, 0*ref_fr)
+        
+        ref_hl = self.H_hl_ref.translation
+        self.set_HL_ref(ref_hl, 0*ref_hl, 0*ref_hl)
+        
+        ref_hr = self.H_hr_ref.translation
+        self.set_HR_ref(ref_hr, 0*ref_hr, 0*ref_hr)
                 
     def set_com_ref(self, pos, vel, acc):
         self.sample_COM_pos[:3] = pos

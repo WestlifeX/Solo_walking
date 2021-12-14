@@ -21,10 +21,10 @@ foot_step_zero = np.array([0.0, -1.46950000e-01])
 alpha       = 10**(2)   # CoP error squared cost weight
 beta        = 0         # CoM position error squared cost weight
 gamma       = 10**(-1)  # CoM velocity error squared cost weight
-h           = 0.23       # fixed CoM height
+h           = 0.22       # fixed CoM height
 g           = 9.81      # norm of the gravity vector
 dt_mpc                = 0.2               # sampling time interval
-T_step                = 0.8              # time needed for every step
+T_step                = 0.6              # time needed for every step
 dt = 0.001
 
 
@@ -35,8 +35,8 @@ nb_steps = 4     # number of steps to perform
 
 nb_dt_per_step = int(round(T_step/dt_mpc))
 N  = nb_steps * nb_dt_per_step
-N_post = 1000
-N_pre = 1000
+N_post = 2000
+N_pre = 2000
 
 print(nb_dt_per_step)
 T_pre  = 1.5                    # simulation time before starting to walk
@@ -51,17 +51,17 @@ fMin = 0.0                          # minimum normal force
 fMax = 1e6                       # maximum normal force
 
 kp_contact = 10.0               # proportional gain of contact constraint
-kp_foot = 10.0    *0            #             
-kp_com = 30.0                   # proportional gain of center of mass task
-kp_am = 20.0  *0                 # proportional gain of angular momentum task
-kp_posture = 1.0    * 0          # proportional gain of joint posture task
+kp_foot = 10.0              #             
+kp_com = 20.0                   # proportional gain of center of mass task
+kp_am = 20.0                 # proportional gain of angular momentum task
+kp_posture = 1.0             # proportional gain of joint posture task
 
 w_contact = 1e5                 # weight of the foot in contact
-w_com = 10                     # weight of center of mass task
-w_posture = 1e-4                # weight of joint posture task
-w_am = 1e0 
+w_com = 1                    # weight of center of mass task
+w_posture = 1e-3    *0             # weight of joint posture task
+w_am = 1e0 *0
 w_forceRef = 1e-8
-w_foot = 1 *0
+w_foot = 1
 w_torque_bounds = 0
 #w_cop = 1e-1
 
