@@ -162,10 +162,10 @@ for i in range(desired_walking_time):
     desired_Z_ref[i+1, 1] = y_fc
 
     # update foot placement matrices and their counters
-    print U_c
-    print U
-    print x_fc
-    print y_fc, '\n'
+    print (U_c)
+    print (U)
+    print (x_fc)
+    print (y_fc, '\n')
     if u_c_counter == 0: #reset arrays and counters
         U_c = repeat(array([1.0, 0.0]), N/2, axis=0)
         U   = repeat(array([[0.0, 0.0], [1.0, 0.0]]), N/2, axis=0)

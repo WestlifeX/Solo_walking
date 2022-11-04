@@ -1,7 +1,7 @@
 # headers:
 # -------
 from numpy import array, dot, tile, arange, absolute, zeros, random, append, exp
-from second_order.rmpc.mrpi.polyhedron import polyhedron, plot_polygon_list
+from mrpi.polyhedron import polyhedron, plot_polygon_list
 from second_order.motion_model import compute_recursive_disturbed_dynamics
 from second_order.reference_trajectories import manual_foot_placement
 from second_order.reference_trajectories import create_CoP_trajectory
@@ -15,7 +15,7 @@ from robust_constraints import add_capturability_robust_terminal_constraints
 from second_order.motion_model import discrete_LIP_dynamics
 from second_order.stmpc.truncated_normal import sample_from_truncated_normal
 from second_order.constraints import add_ZMP_constraints
-from second_order.rmpc.mrpi.mRPI_set import compute_mRPI
+from mrpi.mRPI_set import compute_mRPI
 from second_order import plot_utils
 from numpy import concatenate, eye
 import matplotlib.pyplot as plt

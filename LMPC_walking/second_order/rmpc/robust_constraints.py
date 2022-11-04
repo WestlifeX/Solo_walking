@@ -1,7 +1,7 @@
 from numpy import array, reshape, random, eye, tile, zeros, tile, nditer, ones
 from numpy import arange, dot, vstack
-from second_order.rmpc.mrpi.polyhedron import polyhedron, plot_polygon_list
-from second_order.rmpc.mrpi.mRPI_set import compute_mRPI
+from mrpi.polyhedron import polyhedron, plot_polygon_list
+from mrpi.mRPI_set import compute_mRPI
 from second_order.reference_trajectories import manual_foot_placement
 from second_order.reference_trajectories import create_CoP_trajectory
 import matplotlib.pyplot as plt

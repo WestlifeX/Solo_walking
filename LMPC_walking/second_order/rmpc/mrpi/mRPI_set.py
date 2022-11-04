@@ -41,8 +41,8 @@ def compute_mRPI(epsilon, W, A, B, K):
     A_K = A + dot(B, K)
     if not W.hasHrep:
         W.compute_Hrep()
-    f_i   = W.A.T;
-    g_i   = W.b;
+    f_i   = W.A.T
+    g_i   = W.b
     I_max = W.A.shape[0]
     n     = W.dim
     alpha_candidate = zeros((I_max))
